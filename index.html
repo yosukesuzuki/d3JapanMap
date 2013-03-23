@@ -49,7 +49,7 @@ d3.json("jpn_topo.json", function(error, jpn) {
     svg.selectAll(".subunit")
     .data(topojson.object(jpn, jpn.objects.japan).geometries)
     .enter().append("path")
-    .attr("class", function(d) { return "subunit " + d.id; })
+    .attr("class", function(d,i) { return "subunit JPN" + (i+1); })
     .attr("d", path);
 });
 </script>
