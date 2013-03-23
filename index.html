@@ -2,7 +2,16 @@
 <meta charset="utf-8">
 <style>
 
-/* CSS goes here. */
+    /* CSS goes here. */
+.subunit.JPB { fill: #FFFF00; }  /* "name": "Bonin Is." */
+.subunit.JPH { fill: #87CEFA; }  /* "name": "Honshu"  */
+.subunit.JPI { fill: #00ff00; }  /* "name": "Izu-shoto" */
+.subunit.JPK { fill: #98FB98; }  /* "name": "Hokkaido" */
+.subunit.JPO { fill: #0000FF; }  /* "name": "Nansei-shoto" */
+.subunit.JPS { fill: #C0C0C0; }  /* "name": "Shikoku" */
+.subunit.JPV { fill: #FF0000; }  /* "name": "Volcano Is." */
+.subunit.JPX { fill: #EE82EE; }  /* "name": "Japan" (others)*/
+.subunit.JPY { fill: #EEE8AA; }  /* "name": "Kyushu" */
 
 </style>
 <body>
@@ -37,10 +46,10 @@ var svg = d3.select("body").append("svg")
 .attr("height", height);
 
 d3.json("jpn.json", function(error, jpn) {
-    console.log(jpn)
-    svg.append("path")
-    .datum(topojson.object(jpn, jpn.objects.subunits_jpn))
-//    .attr("d", d3.geo.path().projection(d3.geo.mercator()));
+    svg.selectAll(".subunit")
+    .data(topojson.object(jpn, jpn.objects.subunits_jpn).geometries)
+    .enter().append("path")
+    .attr("class", function(d) { return "subunit " + d.id; })
     .attr("d", path);
 });
 </script>
