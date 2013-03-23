@@ -45,9 +45,9 @@ var svg = d3.select("body").append("svg")
 .attr("width", width)
 .attr("height", height);
 
-d3.json("jpn.json", function(error, jpn) {
+d3.json("jpn_topo.json", function(error, jpn) {
     svg.selectAll(".subunit")
-    .data(topojson.object(jpn, jpn.objects.subunits_jpn).geometries)
+    .data(topojson.object(jpn, jpn.objects.japan).geometries)
     .enter().append("path")
     .attr("class", function(d) { return "subunit " + d.id; })
     .attr("d", path);
