@@ -2,17 +2,29 @@
 <meta charset="utf-8">
 <head>
 <style>
-
+/* color set from adobe kuler https://kuler.adobe.com/#themeID/1993454 
+#723E52
+#3BA490
+#8FA61A
+#D99509
+#E26816
+*/
     /* CSS goes here. */
-.subunit.JPB { fill: #FFFF00; }  /* "name": "Bonin Is." */
-.subunit.JPH { fill: #87CEFA; }  /* "name": "Honshu"  */
-.subunit.JPI { fill: #00ff00; }  /* "name": "Izu-shoto" */
-.subunit.JPK { fill: #98FB98; }  /* "name": "Hokkaido" */
-.subunit.JPO { fill: #0000FF; }  /* "name": "Nansei-shoto" */
-.subunit.JPS { fill: #C0C0C0; }  /* "name": "Shikoku" */
-.subunit.JPV { fill: #FF0000; }  /* "name": "Volcano Is." */
-.subunit.JPX { fill: #EE82EE; }  /* "name": "Japan" (others)*/
-.subunit.JPY { fill: #EEE8AA; }  /* "name": "Kyushu" */
+/*.subunit { fill: #8FA61A;stroke:#3BA490; } */ 
+.background {
+  fill: none;
+  pointer-events: all;
+}
+
+#prefectures {
+  fill: #aaa;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+#prefectures .active {
+  fill: orange;
+}
 
 </style>
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
@@ -25,7 +37,8 @@
 $(document).ready(function(){
     /* JavaScript goes here. */
     var width = 1160,
-    height = 960;
+    height = 960,
+    centered;
     var projection = d3.geo.albers()
     .center([-10, 35.4])
     .rotate([210, 0])
@@ -39,14 +52,43 @@ $(document).ready(function(){
     .attr("width", width)
     .attr("height", height);
 
+    var g = svg.append("g")
+    .attr("id","prefectures");
+
+
     d3.json("jpn_topo_with_meta_data.json", function(error, jpn) {
-        svg.selectAll(".subunit")
+        g.selectAll("path")
         .data(topojson.object(jpn, jpn.objects.japan).geometries)
         .enter().append("path")
         .attr("class", function(d,i) { return "subunit "+prefectures_data.prefectures[i].iso; })
         .attr("id", function(d,i) { return prefectures_data.prefectures[i].iso; })
-        .attr("d", path);
+        .attr("d", path)
+        .on("click",click);
     });
+    function click(d){
+        var x, y, k;
+
+        if (d && centered !== d) {
+            var centroid = path.centroid(d);
+            x = centroid[0];
+            y = centroid[1];
+            k = 4;
+            centered = d;
+        } else {
+            x = width / 2;
+            y = height / 2;
+            k = 1;
+            centered = null;
+        }
+
+        g.selectAll("path")
+        .classed("active", centered && function(d) { return d === centered; });
+
+        g.transition()
+        .duration(1000)
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+        .style("stroke-width", 1.5 / k + "px");
+    }
 });
 </script>
 </body>
