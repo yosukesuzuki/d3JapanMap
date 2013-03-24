@@ -45,11 +45,11 @@ var svg = d3.select("body").append("svg")
 .attr("width", width)
 .attr("height", height);
 
-d3.json("jpn_topo.json", function(error, jpn) {
+d3.json("jpn_topo_with_meta_data.json", function(error, jpn) {
     svg.selectAll(".subunit")
     .data(topojson.object(jpn, jpn.objects.japan).geometries)
     .enter().append("path")
-    .attr("class", function(d,i) { return "subunit JPN" + (i+1); })
+    .attr("class", function(d) { console.log(d);return "subunit "; })
     .attr("d", path);
 });
 </script>
