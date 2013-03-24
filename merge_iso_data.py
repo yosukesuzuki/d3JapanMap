@@ -20,5 +20,5 @@ jpn_topo = f.read()
 
 result_dic = {'prefectures':prefectures}
 
-result_file = open('jpn_prefecture_meta_data_sort_by_sound.json','w')
+result_file = open('jpn_prefecture_meta_data_sort_alphabetical.json','w')
 result_file.write(json.dumps(result_dic, encoding='UTF-8'))

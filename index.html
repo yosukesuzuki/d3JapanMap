@@ -26,6 +26,22 @@
   fill: orange;
 }
 
+.prefecture-label {
+    fill: #777;
+    fill-opacity: .5;
+    font-size: 10px;
+    font-weight: 300;
+    text-anchor: middle;
+}
+text {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 10px;
+    pointer-events: none;
+    display:none;
+}
+text.active{
+    display.visible;
+}
 </style>
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -57,16 +73,28 @@ $(document).ready(function(){
 
 
     d3.json("jpn_topo_with_meta_data.json", function(error, jpn) {
+        var prefecture_geometries = topojson.object(jpn, jpn.objects.japan).geometries;
         g.selectAll("path")
-        .data(topojson.object(jpn, jpn.objects.japan).geometries)
+        .data(prefecture_geometries)
         .enter().append("path")
         .attr("class", function(d,i) { return "subunit "+prefectures_data.prefectures[i].iso; })
         .attr("id", function(d,i) { return prefectures_data.prefectures[i].iso; })
         .attr("d", path)
         .on("click",click);
+
+        g.selectAll(".prefectures-label")
+        .data(prefecture_geometries)
+        .enter().append("text")
+        .attr("class", function(d,i) { return "prefecture-label " +prefectures_data.prefectures[i].iso; })
+        .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+        .attr("dy", ".35em")
+        .text(function(d,i) { return prefectures_data.prefectures[i].prefecture; });
+        
     });
-    function click(d){
+    function click(d,i){
         var x, y, k;
+        console.log(d);
+        console.log(i);
 
         if (d && centered !== d) {
             var centroid = path.centroid(d);
