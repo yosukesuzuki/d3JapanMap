@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<head>
 <style>
 
     /* CSS goes here. */
@@ -14,43 +15,38 @@
 .subunit.JPY { fill: #EEE8AA; }  /* "name": "Kyushu" */
 
 </style>
-<body>
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v0.min.js"></script>
+<script src="jpn_prefectures_meta_data.js"></script>
+</head>
+<body>
 <script>
+$(document).ready(function(){
+    /* JavaScript goes here. */
+    var width = 1160,
+    height = 960;
+    var projection = d3.geo.albers()
+    .center([-10, 35.4])
+    .rotate([210, 0])
+    .parallels([50, 60])
+    .scale(480 * 5)
+    .translate([width / 2, height / 2]);
+    var path = d3.geo.path()
+    .projection(projection);
 
-/* JavaScript goes here. */
-var width = 1160,
-height = 960;
+    var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
 
-
-var projection = d3.geo.albers()
-.center([-10, 35.4])
-.rotate([210, 0])
-.parallels([50, 60])
-.scale(480 * 5)
-.translate([width / 2, height / 2]);
-/*
-var projection = d3.geo.albers()
-.center([0, 55.4])
-.rotate([4.4, 0])
-.parallels([50, 60])
-.scale(1200 * 5)
-.translate([width / 2, height / 2]);
-*/
-var path = d3.geo.path()
-.projection(projection);
-
-var svg = d3.select("body").append("svg")
-.attr("width", width)
-.attr("height", height);
-
-d3.json("jpn_topo_with_meta_data.json", function(error, jpn) {
-    svg.selectAll(".subunit")
-    .data(topojson.object(jpn, jpn.objects.japan).geometries)
-    .enter().append("path")
-    .attr("class", function(d) { console.log(d);return "subunit "; })
-    .attr("d", path);
+    d3.json("jpn_topo_with_meta_data.json", function(error, jpn) {
+        svg.selectAll(".subunit")
+        .data(topojson.object(jpn, jpn.objects.japan).geometries)
+        .enter().append("path")
+        .attr("class", function(d,i) { return "subunit "+prefectures_data.prefectures[i].iso; })
+        .attr("id", function(d,i) { return prefectures_data.prefectures[i].iso; })
+        .attr("d", path);
+    });
 });
 </script>
 </body>
